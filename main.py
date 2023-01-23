@@ -20,9 +20,6 @@ class aclient(discord.Client):
 client = aclient()
 tree = app_commands.CommandTree(client)
 
-headersnoauth = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
-
-
 with open("database.json", "r") as f:
     tokens = json.load(f)
 
@@ -60,7 +57,7 @@ async def sendquote(interaction: discord.Interaction):
         auth = tokens[str(interaction.user.id)]
         await interaction.response.send_message(embed=discord.Embed(title="Your auth", description=f"```{auth}```", color=0x1aff00), ephemeral=True)
     except KeyError:
-        await interaction.response.send_message("You have not linked your auth!")
+        await interaction.response.send_message(embed=discord.Embed(title="Error!", description="You have not linked your token yet, use `/link` to link your account :)"), ephemeral=True)
 
 @tree.command(name='privuser', description='gives info about a user')
 async def privuser(interaction: discord.Interaction):
@@ -88,13 +85,10 @@ async def pubuser(interaction: discord.Interaction):
         'x-auth-token': json.load(open("database.json", "r"))[str(interaction.user.id)]
     }
     request = requests.get(url="https://api.bloxflip.com/user", headers=aheader).json()['user']
-    robloxID = request['robloxId']
-    robloxNAME = request["robloxUsername"]
-    wallet = request['wallet']
     embed = discord.Embed(title=f"User info from {interaction.user}", color=0x1aff00)
-    embed.add_field(name="Roblox ID", value=robloxID)
-    embed.add_field(name="Roblox Username", value=robloxNAME)
-    embed.add_field(name="Wallet", value=wallet)
+    embed.add_field(name="Roblox ID", value=request['robloxId'])
+    embed.add_field(name="Roblox Username", value=request["robloxUsername"])
+    embed.add_field(name="Wallet", value=request['wallet'])
     await interaction.edit_original_response(content='', embed=embed)
 
 @tree.command(name='autotowers', description='plays a towers game for you')
