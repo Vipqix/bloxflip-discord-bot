@@ -140,6 +140,8 @@ async def autotowers(interaction: discord.Interaction, bet_amount: int, difficul
                 embed.add_field(name='loss:', value=f'```{savedwallet - wallet}```')
                 await interaction.edit_original_response(content='', embed=embed)
                 return
+            if towers_stage == 7:
+                break
 
         """ tells you if the game is over """
         requests.post(url="https://api.bloxflip.com/games/towers/action", headers=aheader, json={"cashout": True}).json()
