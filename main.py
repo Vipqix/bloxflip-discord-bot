@@ -1,9 +1,10 @@
 from discord import app_commands
 import discord
 import json
-import requests
+import cloudscraper
 import random
 
+requests = cloudscraper.create_scraper()
 
 class aclient(discord.Client):
     def __init__(self):
